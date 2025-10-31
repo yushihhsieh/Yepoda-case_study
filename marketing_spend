@@ -1,0 +1,18 @@
+-- 1. Drop and recreate table
+DROP TABLE IF EXISTS revenue;
+
+CREATE TABLE marketing_spend(
+	date DATE,
+	paid_search_spend DECIMAL,
+	paid_social_spend DECIMAL,
+	display_spend DECIMAL,
+	email_spend DECIMAL,
+	affiliate_spend DECIMAL,
+	tv_spend DECIMAL
+);
+
+-- 2. Load from CSV
+COPY marketing_spend (date,paid_search_spend,paid_social_spend,display_spend,email_spend,affiliate_spend,tv_spend)
+FROM '/Users/yushih/Desktop/Yepoda/marketing_spend.csv' 
+DELIMITER ',' 
+CSV HEADER;
