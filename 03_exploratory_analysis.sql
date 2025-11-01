@@ -1,4 +1,4 @@
--- 3. Create summary statistics for each marketing channel and revenue
+-- 1. Create summary statistics for each marketing channel and revenue
 -- UNNEST() with paired arrays: one with metric names; the other with spend values
 WITH unpivoted AS (
 SELECT ms.date,
@@ -24,8 +24,9 @@ JOIN LATERAL UNNEST(
 		STDDEV(total) AS stddev_value
 	FROM unpivoted
 	GROUP BY 1;
-	
--- 4.1 Analyze temporal patterns
+
+
+-- 2.1 Analyze temporal patterns
 -- Monthly aggregations of spend and revenue
 WITH combined AS (
 SELECT ms.date,
@@ -45,8 +46,9 @@ SELECT date_trunc('month', date) AS date_month,
 FROM combined
 GROUP BY 1
 order by 1;
-	
--- 4.2 Day-of-week patterns
+
+
+-- 2.2 Day-of-week patterns
 WITH combined AS (
 SELECT ms.date,
 	TO_CHAR(ms.date, 'Dy') AS day_of_week,
@@ -66,7 +68,8 @@ SELECT day_of_week,
 FROM combined
 GROUP BY day_of_week;
 
--- 4.3 Seasonal trends
+
+-- 2.3 Seasonal trends
 WITH combined AS (
 SELECT ms.date,
 	(ms.paid_search_spend + ms.paid_social_spend + ms.display_spend +
