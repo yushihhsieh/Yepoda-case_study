@@ -29,7 +29,7 @@ Executive Summary
 
         - Continue investing in high revenue channels like Paid Search and Paid Social to maintain revenue growth.
         - Reallocate budget toward Email and Affiliate channels, which demonstrate superior ROAS and scalability.
-        - Concentrate Budgets in high ROI Months (Jan–Apr); reduce Investment in low season (Jul–Oct)
+        - Concentrate Budgets in high ROI Months (Jan–Apr); reduce investment in low season (Jul–Oct)
         - Implement performance monitoring which track ROI monthly and compare against seasonality indices to improve predictive budgeting.
 
 
