@@ -35,7 +35,7 @@ WITH unpivoted AS (
 	spend,
 	revenue,
 	NTILE(10) OVER (PARTITION BY channel ORDER BY spend) AS spend_decile
-  FROM spend_long
+  FROM unpivoted
 
 -- Compute average ROAS per decile
 ), roas_per_decile AS (
