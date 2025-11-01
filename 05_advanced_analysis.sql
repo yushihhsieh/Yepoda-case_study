@@ -22,6 +22,7 @@ WITH combined AS (
     corr(tv_spend, revenue) AS corr_tv
   FROM combined;
 
+
 -- 2. Analyze the impact of external factors
 WITH combined AS (
   SELECT r.date,
@@ -70,6 +71,102 @@ WITH combined AS (
 	revenue_diff_weekend_vs_weekday,
 	seasonality_impact_corr
   FROM factors_analysis;
+
+
+-- 3. Calculate incrementality
+-- 3.1 Compare revenue on days with zero spend vs days with spend for each
+WITH daily_data AS (
+  SELECT r.date,
+	r.revenue,
+	r.transactions,
+	r.new_customers,
+	ms.paid_search_spend,
+	ms.paid_social_spend,
+	ms.display_spend,
+	ms.email_spend,
+	ms.affiliate_spend,
+	ms.tv_spend
+  FROM revenue r
+  LEFT JOIN marketing_spend ms 
+	USING(date)
+
+-- Unpivot channels
+), unpivoted AS (
+  SELECT date,
+	revenue,
+	col_name AS channel,
+	value AS spend
+  FROM daily_data
+	CROSS JOIN LATERAL 
+        UNNEST(ARRAY['paid_search','paid_social','display','email','affiliate','tv'],
+			ARRAY[paid_search_spend, paid_social_spend, display_spend, email_spend, affiliate_spend, tv_spend]
+		) AS u(col_name, value)
+
+), zero_vs_nonzero AS (
+  SELECT channel,
+	AVG(CASE WHEN spend = 0 THEN revenue END) AS avg_revenue_zero_spend,
+	AVG(CASE WHEN spend > 0 THEN revenue END) AS avg_revenue_with_spend
+  FROM unpivoted
+  GROUP BY 1
+)
+
+  SELECT * 
+  FROM zero_vs_nonzero
+  ORDER BY channel;
+
+
+-- 3.2 Calculate the marginal return for different spend levels (quartiles)
+WITH daily_data AS (
+  SELECT r.date,
+	r.revenue,
+	r.transactions,
+	r.new_customers,
+	ms.paid_search_spend,
+	ms.paid_social_spend,
+	ms.display_spend,
+	ms.email_spend,
+	ms.affiliate_spend,
+	ms.tv_spend
+  FROM revenue r
+  LEFT JOIN marketing_spend ms 
+	USING(date)
+
+-- Unpivot channels
+), unpivoted AS (
+  SELECT date,
+	revenue,
+	col_name AS channel,
+	value AS spend
+  FROM daily_data
+	CROSS JOIN LATERAL 
+        UNNEST(ARRAY['paid_search','paid_social','display','email','affiliate','tv'],
+			ARRAY[paid_search_spend, paid_social_spend, display_spend, email_spend, affiliate_spend, tv_spend]
+		) AS u(col_name, value)
+
+-- Quartiles per channel
+-- Use NTILE() window function to divide each channel’s spend into quartiles	
+), quartiles AS (
+  SELECT *,
+	NTILE(4) OVER (PARTITION BY channel ORDER BY spend) AS spend_quartile
+  FROM unpivoted
+
+-- Compute marginal_return: revenue per unit of spend	
+), marginal_return AS (
+  SELECT channel,
+	spend_quartile,
+	AVG(spend) AS avg_spend,
+	AVG(revenue) AS avg_revenue,
+	AVG(revenue)/NULLIF(AVG(spend),0) AS marginal_return
+  FROM quartiles
+  GROUP BY 1, 2
+  ORDER BY 1, 2
+
+)
+  SELECT channel,
+	spend_quartile,
+	marginal_return
+  FROM marginal_return;
+
 
 -- 4. Create a cohort analysis showing how marketing efficiency has changed over time
 WITH combined AS (
