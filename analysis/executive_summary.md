@@ -2,7 +2,7 @@ Executive Summary
 
 1. Key findings
    
-        - Total marketing spend: approximately $8.1 million across six paid channels (Paid Search, Paid Social, TV, Display, Affiliate and Email).
+        - Approximately $8.1 million on total marketing spend across six paid channels.
         - Total transactions: 408,170, driven by 139,851 new customers, suggesting strong acquisition volume and conversion throughput.
         - ROI performance in Q1–Q2 of 2024 remains solid but lower than 2023, indicating potential market saturation or increased costs.
         - End-of-Year Recovery: Q4 shows a gradual rebound, validating the impact of seasonal promotions.
