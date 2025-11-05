@@ -95,5 +95,9 @@ This repository contains SQL scripts for managing and querying a postgre databas
         -- 3. Provide budget reallocation recommendations
 
 4. Assumptions made
-Since revenue table is in total per day, not broken down by channel, it is not possible to join marketing_spend table on channel level. 
-When compute total revenue by channel, I assume revenue is allocated proportionally to spend share.
+
+	Since revenue table is in total per day, not broken down by channel, it is not possible to join marketing_spend table on channel level. 
+	When compute total revenue by channel, I assume revenue is allocated proportionally to spend share.
+
+
+
